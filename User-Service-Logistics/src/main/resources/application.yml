@@ -1,0 +1,34 @@
+server:
+  port: 8400
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/logistics-management
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  kafka:
+    bootstrap-servers:localhost: 9092
+    consumer:
+      group-id: user-auth
+      auto-offset-reset: earliest
+    
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: YOUR_CLIENT_ID
+            client-secret: secretkey1
+jwt:
+  secret: mySecretKeyForJwtAuthentication123456
+  access-token-expiration: 86400000
+  refresh-token-expiration: 604800000
