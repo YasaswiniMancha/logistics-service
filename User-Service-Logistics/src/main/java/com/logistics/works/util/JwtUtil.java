@@ -1,4 +1,4 @@
-package com.logistics.works.config;
+package com.logistics.works.util;
 
 import java.security.Key;
 import java.util.Date;

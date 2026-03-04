@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.logistics.works.config.JwtUtil;
 import com.logistics.works.dto.AuthResponseDto;
 import com.logistics.works.dto.LoginRequestDto;
 import com.logistics.works.dto.UserRequestDto;
@@ -19,6 +18,7 @@ import com.logistics.works.mapper.UserMapper;
 import com.logistics.works.repository.UserRepository;
 import com.logistics.works.security.JwtBlacklist;
 import com.logistics.works.service.UserService;
+import com.logistics.works.util.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
 

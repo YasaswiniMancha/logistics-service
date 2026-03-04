@@ -15,18 +15,4 @@ public class PasswordConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
-//	 @Bean
-//	    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//
-//	        http
-//	            .csrf(csrf-> csrf.disable())
-//	            .authorizeHttpRequests( auth -> auth
-//	                     .requestMatchers("/api/logistics/track/**").permitAll()
-//	                     .anyRequest().authenticated() 
-//	            )
-//	            .oauth2ResourceServer(oauth-> oauth.jwt(jwt->{}));
-//	            
-//
-//	        return http.build();
-//	    }
 }
