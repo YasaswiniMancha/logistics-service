@@ -3,8 +3,10 @@ package com.logistics.works.serviceImpl;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.logistics.works.dto.AuthRequestDto;
 import com.logistics.works.dto.AuthResponseDto;
 import com.logistics.works.dto.UserRequestDto;
@@ -12,6 +14,8 @@ import com.logistics.works.dto.UserResponseDto;
 import com.logistics.works.entity.Roles;
 import com.logistics.works.entity.User;
 import com.logistics.works.exceptions.UserNotFoundException;
+import com.logistics.works.kafka.event.UserCreatedEventDto;
+import com.logistics.works.kafka.event.producer.UserEventProducer;
 import com.logistics.works.mapper.UserMapper;
 import com.logistics.works.repository.UserRepository;
 import com.logistics.works.security.JwtBlacklist;
@@ -29,6 +33,7 @@ public class UserServiceImpl implements UserService {
 	private final JwtUtil jwtUtil;
 	private final JwtBlacklist jwtBlacklist;
 	private final UserMapper userMapper;
+	private final UserEventProducer userEventProducer;
 
 	@Override
 	public AuthResponseDto signup(UserRequestDto request) {
@@ -41,11 +46,36 @@ public class UserServiceImpl implements UserService {
 		 
 		 User savedUser = userRepo.save(user);
 		 
+		 //kafka event start
+		 UserCreatedEventDto event = UserCreatedEventDto.builder()
+				 .id(savedUser.getId())
+				 .username(savedUser.getUsername())
+				 .email(savedUser.getEmail())
+				 .phoneNumber(savedUser.getPhoneNumber())
+				 .build();
+				 
+		 userEventProducer.publishUserCreatedEvent(event);
+		 //ended kafka event
+		 
+		 
 		 String accessToken = jwtUtil.generateToken(savedUser);
 		 
 		 String refreshToken = jwtUtil.refreshToken(savedUser);
 		 
 		 return buildAuthResponse(savedUser, accessToken, refreshToken);
+		 
+		 /*
+Client → Signup API
+        ↓
+User saved in DB
+        ↓
+Kafka Event Published
+        ↓
+Topic: user-created-topic
+        ↓
+Other microservices (Logistics Service) consume it
+
+		  */
 	}
 
 	@Override
@@ -75,7 +105,7 @@ public class UserServiceImpl implements UserService {
 		user.setPhoneNumber(request.getPhoneNumber());
 		user.setState(request.getState());
 		user.setAddress(request.getAddress());
-		user.setCountry(request.getAddress());
+		user.setCountry(request.getCountry());
 		User updatedUser= userRepo.save(user);
 		return userMapper.toResponseDto(updatedUser);
 	}
