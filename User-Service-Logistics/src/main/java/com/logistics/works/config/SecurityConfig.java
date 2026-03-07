@@ -28,8 +28,6 @@ public class SecurityConfig {
      - Session policy
      - Filter order
       */
-	
-	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity https) throws Exception{
 		

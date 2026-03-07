@@ -3,12 +3,10 @@ package com.logistics.works.serviceImpl;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import com.logistics.works.dto.AuthRequestDto;
 import com.logistics.works.dto.AuthResponseDto;
-import com.logistics.works.dto.LoginRequestDto;
 import com.logistics.works.dto.UserRequestDto;
 import com.logistics.works.dto.UserResponseDto;
 import com.logistics.works.entity.Roles;
@@ -51,7 +49,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public AuthResponseDto login(LoginRequestDto request) {
+	public AuthResponseDto login(AuthRequestDto request) {
 		User user = userRepo.findByUsername(request.getUsername())
 				.orElseThrow(()-> new UserNotFoundException("User not found exception"));
 		if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -70,7 +68,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserResponseDto updateuser(UUID userId, UserRequestDto request) {
+	public UserResponseDto updateUser(UUID userId, UserRequestDto request) {
 		User user = userRepo.findById(userId).orElseThrow(()-> new UserNotFoundException("user not found"));
 		user.setFirstName(request.getFirstName());
 		user.setLastName(request.getLastName());
@@ -78,9 +76,8 @@ public class UserServiceImpl implements UserService {
 		user.setState(request.getState());
 		user.setAddress(request.getAddress());
 		user.setCountry(request.getAddress());
-		
-		User updated = userRepo.save(user);
-		return userMapper.toResponseDto(user);
+		User updatedUser= userRepo.save(user);
+		return userMapper.toResponseDto(updatedUser);
 	}
 
 	@Override
@@ -102,4 +99,5 @@ public class UserServiceImpl implements UserService {
 				.build();
 		
 	}
+
 }

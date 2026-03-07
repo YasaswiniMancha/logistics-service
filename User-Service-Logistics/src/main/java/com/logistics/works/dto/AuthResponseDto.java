@@ -15,7 +15,7 @@ public class AuthResponseDto {
 	private String refreshToken;
 	
 	@Builder.Default
-	private String tokenType;
+	private String tokenType = "Bearer";
 	
 	private UUID userId;
 	
